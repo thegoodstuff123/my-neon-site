@@ -1,0 +1,8 @@
+DirectoryPath: .
+CheckExternal: true
+CheckDoctype: true
+CheckImages: true
+CheckAlt: true
+IgnoreURLs:
+  - "javascript:void(0)"
+LogLevel: 2

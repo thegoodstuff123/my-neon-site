@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page 2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Module 2 Active</h1>
+    <div class="container">
+        <a href="javascript:void(0)" class="btn" onclick="playClick(); triggerAlert('System Ping!')">Action Alpha</a>
+        <a href="javascript:void(0)" class="btn" onclick="playPowerUp(); changeColor(this)">Action Bravo</a>
+        <a href="javascript:void(0)" class="btn" onclick="playClick(); triggerAlert('Data Sent')">Action Charlie</a>
+    </div>
+    <a href="index.html" class="btn btn-back" onclick="playClick()">← Return to Hub</a>
+
+    <script>
+        // Create the Audio Context
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        // High-pitched "Click" Sound
+        function playClick() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        // "Power Up" Rising Sound
+        function playPowerUp() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function triggerAlert(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        function changeColor(element) {
+            const colors = ['#00ff88', '#00d2ff', '#ff0055', '#ffaa00', '#cc00ff'];
+            element.style.background = colors[Math.floor(Math.random() * colors.length)];
+            element.style.color = '#000';
+        }
+    </script>
+</body>
+</html>
