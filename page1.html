@@ -2,64 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Page 1</title>
+    <title>Analytics Page</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Screen shake animation */
+        .shake { animation: shake 0.2s; }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            40% { transform: translate(3px, 2px) rotate(-1deg); }
+            100% { transform: translate(1px, -1px) rotate(0deg); }
+        }
+        .active-glow { box-shadow: inset 0 0 100px var(--glow); transition: 0.5s; }
+    </style>
 </head>
-<body>
-    <h1>Module 1 Active</h1>
+<body id="main-body">
+    <h1>Analytics</h1>
     <div class="container">
-        <a href="javascript:void(0)" class="btn" onclick="playClick(); triggerAlert('System Ping!')">Action Alpha</a>
-        <a href="javascript:void(0)" class="btn" onclick="playPowerUp(); changeColor(this)">Action Bravo</a>
-        <a href="javascript:void(0)" class="btn" onclick="playClick(); triggerAlert('Data Sent')">Action Charlie</a>
+        <a href="javascript:void(0)" class="btn" onclick="runDiagnostic(this)">Scan System</a>
+        <a href="javascript:void(0)" class="btn" onclick="overrideProtocol(this)">Override</a>
     </div>
-    <a href="index.html" class="btn btn-back" onclick="playClick()">← Return to Hub</a>
+    <a href="index.html" class="btn btn-back" style="margin-top:20px;">Return</a>
 
     <script>
-        // Create the Audio Context
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        // High-pitched "Click" Sound
-        function playClick() {
+        // High-tech beep function
+        function beep(freq, duration, type) {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+            osc.type = type || 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.1);
+            osc.stop(audioCtx.currentTime + duration);
         }
 
-        // "Power Up" Rising Sound
-        function playPowerUp() {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.3);
+        function runDiagnostic(btn) {
+            beep(600, 0.1, 'square');
+            btn.innerText = "Scanning...";
+            document.getElementById('main-body').classList.add('active-glow');
+            
+            setTimeout(() => {
+                beep(800, 0.2, 'sine');
+                btn.innerText = "Scan Complete";
+                document.getElementById('main-body').classList.remove('active-glow');
+            }, 1000);
         }
 
-        function triggerAlert(msg) {
+        function overrideProtocol(btn) {
+            beep(100, 0.5, 'sawtooth'); // Dangerous bass sound
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 200);
+            
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.innerText = msg;
+            toast.innerText = "CRITICAL OVERRIDE DETECTED";
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
-        }
-
-        function changeColor(element) {
-            const colors = ['#00ff88', '#00d2ff', '#ff0055', '#ffaa00', '#cc00ff'];
-            element.style.background = colors[Math.floor(Math.random() * colors.length)];
-            element.style.color = '#000';
         }
     </script>
 </body>
